@@ -7,4 +7,9 @@
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
         <item name="postSplashScreenTheme">@style/Theme.CatchDesign</item>
     </style>
+
+<!--    <style name="Theme.CatchDesign" parent="android:ThemeOverlay.Material.Light">-->
+<!--        <item name="android:background">@color/theme_blue</item>-->
+<!--        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>-->
+<!--    </style>-->
 </resources>

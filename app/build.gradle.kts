@@ -2,8 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    id("kotlin-kapt")
 }
-
+hilt {
+    enableAggregatingTask = false
+}
 android {
     namespace = "com.android.catchdesign"
     compileSdk {
@@ -59,4 +63,12 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.hilt)
+    kapt(libs.hiltCompiler)
+    implementation(libs.androidxHiltNavigationCompose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    implementation(libs.coroutines)
+    implementation(libs.converter.gson) // JSON parser
 }
