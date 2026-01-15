@@ -2,4 +2,9 @@
 <resources>
 
     <style name="Theme.CatchDesign" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.CustomSplashscreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/home</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.CatchDesign</item>
+    </style>
 </resources>
