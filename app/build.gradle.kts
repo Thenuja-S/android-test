@@ -70,5 +70,14 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.coroutines)
-    implementation(libs.converter.gson) // JSON parser
+    implementation(libs.converter.gson)
+
+    testImplementation(libs.hilt.android.testing)
+    kaptTest(libs.hiltCompiler)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.robolectric)
 }
