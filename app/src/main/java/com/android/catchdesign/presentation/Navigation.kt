@@ -1,5 +1,6 @@
 package com.android.catchdesign.presentation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -18,7 +19,7 @@ sealed class Screen(val route: String) {
 }
 
 @Composable
-fun AppNavigation(modifier: Modifier = Modifier) {
+fun AppNavigation(modifier: Modifier = Modifier, context: Context) {
     val navController = rememberNavController()
     
     NavHost(
@@ -28,6 +29,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     ) {
         composable(Screen.List.route) {
             ListScreen(
+                context = context,
                 modifier = Modifier,
                 onItemClick = { title, content ->
                     navController.navigate(Screen.Detail.createRoute(title,content))

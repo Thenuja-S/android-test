@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import com.android.catchdesign.presentation.AppNavigation
 import com.android.catchdesign.ui.theme.CatchDesignTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,7 +20,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         installSplashScreen()
         actionBar?.hide()
         setContent {
@@ -33,7 +31,7 @@ class MainActivity : ComponentActivity() {
 
             }
             CatchDesignTheme() {
-                AppNavigation(modifier = Modifier.fillMaxSize())
+                AppNavigation(modifier = Modifier.fillMaxSize(), this.applicationContext)
             }
         }
     }

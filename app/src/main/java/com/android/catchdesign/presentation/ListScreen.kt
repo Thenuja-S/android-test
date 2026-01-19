@@ -1,5 +1,6 @@
 package com.android.catchdesign.presentation
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,12 +41,16 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.android.catchdesign.R
+import com.android.catchdesign.utils.NetworkUtils
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListScreen(
+    context: Context,
     viewModel: ContentViewModel = hiltViewModel(),
     modifier: Modifier,
     onItemClick: (title: String, content: String) -> Unit = { title, content -> }
@@ -97,7 +102,24 @@ fun ListScreen(
                 state = state,
                 indicator = {}
             ) {
-                if (data.isEmpty()) {
+                if (!NetworkUtils.isNetworkAvailable(context) && data.isEmpty()){
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(colorResource(R.color.home)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.network_connection),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier.align(Alignment.Center).padding(start = 4.dp),
+                            color = Color.White
+                        )
+
+                    }
+                }
+                else if (data.isEmpty()) {
                     Box(
                         modifier.fillMaxSize()
                             .background(colorResource(R.color.home)),
@@ -106,12 +128,11 @@ fun ListScreen(
                         Image(
                             painter = painterResource(id = R.drawable.logo),
                             contentDescription = "Logo",
-                        )
-
-                    }
-                } else {
-                        LazyColumn(
-                            modifier.fillMaxSize()
+                        )}
+                }
+                else {
+                    LazyColumn(
+                        modifier.fillMaxSize()
                                 .windowInsetsPadding(WindowInsets.statusBars)
                         ) {
                             items(data.size) { index ->
@@ -123,10 +144,8 @@ fun ListScreen(
                                             data[index].title,
                                             data[index].content
                                         )
-                                    }
-                                )
-                            }
-                        }
+                            }) }
+                    }
                 }
             }
         }

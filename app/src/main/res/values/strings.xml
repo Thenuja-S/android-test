@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Catch Design</string>
+    <string name="network_connection">Sorry, You are in Offline. Please enable your internet to access the data.!</string>
 </resources>
