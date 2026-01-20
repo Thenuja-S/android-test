@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
 
             }
             CatchDesignTheme() {
-                AppNavigation(modifier = Modifier.fillMaxSize(), this.applicationContext)
+                AppNavigation(this.applicationContext)
             }
         }
     }

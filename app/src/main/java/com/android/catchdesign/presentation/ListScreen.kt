@@ -4,11 +4,9 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -36,13 +34,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.android.catchdesign.domain.models.ContentItem
-import android.util.Log
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import com.android.catchdesign.R
 import com.android.catchdesign.utils.NetworkUtils
 
@@ -52,7 +48,6 @@ import com.android.catchdesign.utils.NetworkUtils
 fun ListScreen(
     context: Context,
     viewModel: ContentViewModel = hiltViewModel(),
-    modifier: Modifier,
     onItemClick: (title: String, content: String) -> Unit = { title, content -> }
 ){
 
@@ -62,81 +57,66 @@ fun ListScreen(
 
     Scaffold(
         topBar = {
-            Column {
-                if (isRefreshing) {
-                    TopAppBar(
-                        title = {
-                            Box(
-                                modifier.fillMaxWidth()
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .align(Alignment.Center)
-                                ) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(60.dp),
-                                        color = Color.White,
-                                        trackColor = colorResource(R.color.home),
-                                        strokeWidth = 6.dp,
-
-                                    )
-                                }
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = colorResource(R.color.theme_blue)
-                        )
+            if (isRefreshing) {
+                TopAppBar(
+                    title = {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(36.dp),
+                                color = Color.White,
+                                trackColor = colorResource(R.color.home),
+                                strokeWidth = 4.dp
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = colorResource(R.color.theme_blue)
                     )
-                }
+                )
             }
         },
-    ) { paddingValues ->
-        Column (
-            modifier.fillMaxSize()
-        ) {
-            PullToRefreshBox(
-                isRefreshing = isRefreshing,
-                onRefresh = { viewModel.refreshContent() },
-                modifier  .fillMaxSize()
-                    .padding(paddingValues),
-                state = state,
-                indicator = {}
-            ) {
-                if (!NetworkUtils.isNetworkAvailable(context) && data.isEmpty()){
+        content = { paddingValues ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                if ((!NetworkUtils.isNetworkAvailable(context) && data.isEmpty()) || data.isEmpty()) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(colorResource(R.color.home)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = stringResource(R.string.network_connection),
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Normal,
-                            modifier = Modifier.align(Alignment.Center).padding(start = 4.dp),
-                            color = Color.White
-                        )
-
+                        if (!NetworkUtils.isNetworkAvailable(context)) {
+                            Text(
+                                text = stringResource(R.string.network_connection),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Normal,
+                                color = Color.White
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.logo),
+                                contentDescription = "Logo"
+                            )
+                        }
                     }
                 }
-                else if (data.isEmpty()) {
-                    Box(
-                        modifier.fillMaxSize()
-                            .background(colorResource(R.color.home)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.logo),
-                            contentDescription = "Logo",
-                        )}
-                }
-                else {
-                    LazyColumn(
-                        modifier.fillMaxSize()
-                                .windowInsetsPadding(WindowInsets.statusBars)
+                PullToRefreshBox(
+                    isRefreshing = isRefreshing,
+                    onRefresh = { viewModel.refreshContent() },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    state = state,
+                    indicator = {}
+                ) {
+                    if (data.isNotEmpty()) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
                         ) {
                             items(data.size) { index ->
-                                Log.i("DesignUI", "ListScreen: ${data[index]}")
                                 ContentItem(
                                     content = data[index],
                                     onClick = {
@@ -144,12 +124,15 @@ fun ListScreen(
                                             data[index].title,
                                             data[index].content
                                         )
-                            }) }
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
-    }
+    )
 }
 
 @Composable
@@ -162,31 +145,44 @@ fun ContentItem(content: ContentItem, onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .padding(horizontal = 15.dp, vertical = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = content.title,
-                fontSize = 20.sp,
-                color = Color.Black
-            )
-            
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = content.subtitle,
+                    text = content.title,
                     fontSize = 18.sp,
-                    color = Color.Gray
-                )
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = "Navigate",
-                    tint = Color.Black
+                    color = colorResource(R.color.theme_blue)
                 )
             }
+            Column(
+                modifier = Modifier.weight(2f)
+            ){ Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = content.subtitle,
+                        fontSize = 18.sp,
+                        color = colorResource(R.color.sub_title),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 8.dp),
+                        textAlign = TextAlign.End
+                    )
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = "Navigate",
+                        tint = colorResource(R.color.theme_blue)
+                    )
+                }
+            }
         }
-        HorizontalDivider(color = Color.LightGray, thickness = 1.dp)
+        HorizontalDivider(
+            color = Color.LightGray,
+            thickness = 1.dp
+        )
     }
 }

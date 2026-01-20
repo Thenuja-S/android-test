@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,7 +61,7 @@ fun DetailScreen(
                                         .scale(1.2f)
                                 )
                                 Text(
-                                    text = "Back",
+                                    text = stringResource(R.string.back),
                                     color = colorResource(R.color.button_text_blue),
                                     fontSize = 18.sp
                                 )
@@ -71,7 +72,7 @@ fun DetailScreen(
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal,
                                 modifier = Modifier.align(Alignment.Center),
-                                color = Color.Black
+                                color = colorResource(R.color.theme_blue)
                             )
                         }
                     },
